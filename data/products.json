@@ -1,0 +1,119 @@
+[
+    {
+        "id": "95156d83-72b7-4161-8da6-aaf1f7d9d817",
+        "title": "Licra Pierna Larga",
+        "description": "Licra deportiva larga para entrenamiento de patinaje.",
+        "code": "LPL01",
+        "price": 130,
+        "status": true,
+        "stock": 6,
+        "category": "Uniformes",
+        "thumbnails": [
+            "/src/assets/LicraPL.jpeg"
+        ]
+    },
+    {
+        "id": "b33a33c9-0f04-4227-925a-969ea9d73b79",
+        "title": "Licra Pierna Corta",
+        "description": "Licra corta ideal para competiciones y clima cálido.",
+        "code": "LPC01",
+        "price": 120,
+        "status": true,
+        "stock": 7,
+        "category": "Uniformes",
+        "thumbnails": [
+            "/src/assets/LicraPC.jpeg"
+        ]
+    },
+    {
+        "id": "4f2a12ee-1786-48b3-a7bf-aa70ce742ea9",
+        "title": "Casco de Patinaje",
+        "description": "Casco ligero y resistente para uso recreativo y profesional.",
+        "code": "CP01",
+        "price": 239,
+        "status": true,
+        "stock": 29,
+        "category": "Protecciones",
+        "thumbnails": [
+            "/src/assets/Casco.jpeg"
+        ]
+    },
+    {
+        "id": "419d0e1a-d7f8-4d05-85f7-01268a31740b",
+        "title": "Rodilleras",
+        "description": "Rodilleras acolchadas para entrenamiento seguro.",
+        "code": "R01",
+        "price": 66,
+        "status": true,
+        "stock": 18,
+        "category": "Protecciones",
+        "thumbnails": [
+            "/src/assets/Rodilleras.jpeg"
+        ]
+    },
+    {
+        "id": "91c3f53d-f189-41a9-9d32-3619ba65203a",
+        "title": "Kit de Protección",
+        "description": "Kit para protección total de brazos y piernas.",
+        "code": "KP01",
+        "price": 75,
+        "status": true,
+        "stock": 29,
+        "category": "Protecciones",
+        "thumbnails": [
+            "/src/assets/Kit.jpeg"
+        ]
+    },
+    {
+        "id": "92d56752-2daa-4906-9817-a1d57573816b",
+        "title": "Morral Deportivo",
+        "description": "Morral resistente para llevar implementos de patinaje.",
+        "code": "MD01",
+        "price": 176,
+        "status": true,
+        "stock": 9,
+        "category": "Accesorios",
+        "thumbnails": [
+            "/src/assets/Morral.jpeg"
+        ]
+    },
+    {
+        "id": "eef09e37-fea9-4e92-9f20-12400b40078d",
+        "title": "Cordones de Alta Resistencia",
+        "description": "Cordones especiales para botas de patinaje profesional.",
+        "code": "CAR01",
+        "price": 33,
+        "status": true,
+        "stock": 60,
+        "category": "Accesorios",
+        "thumbnails": [
+            "/src/assets/Cordones.jpeg"
+        ]
+    },
+    {
+        "id": "1876a2ee-1523-4630-86fb-372d5562963a",
+        "title": "Llaves Profesionales",
+        "description": "Herramientas para ajustes de ejes y ruedas.",
+        "code": "LP01",
+        "price": 21,
+        "status": true,
+        "stock": 15,
+        "category": "Accesorios",
+        "thumbnails": [
+            "/src/assets/Llaves.jpeg"
+        ]
+    },
+    {
+        "id": "a63fc55c-3c22-4016-bd00-5905b7c815b1",
+        "title": "Producto de prueba",
+        "description": "Descripción del producto",
+        "code": "ABC123",
+        "price": 100,
+        "status": true,
+        "stock": 10,
+        "category": "categoría",
+        "thumbnails": [
+            "/images/img1.jpg"
+        ]
+    }
+]
