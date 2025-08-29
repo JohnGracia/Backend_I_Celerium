@@ -115,5 +115,21 @@
         "thumbnails": [
             "/images/img1.jpg"
         ]
+    },
+    {
+        "id": "1984fdbd-f08a-4161-b5eb-b65e10b9ec0e",
+        "title": "Ruedas",
+        "description": "Ruedas para patines",
+        "price": "15000",
+        "code": "RP01",
+        "stock": "30"
+    },
+    {
+        "id": "9026732b-aa24-45d8-a062-7e1633008ce7",
+        "title": "Aros",
+        "description": "Aros para entrenamiento",
+        "price": "10000",
+        "code": "AR01",
+        "stock": "60"
     }
 ]

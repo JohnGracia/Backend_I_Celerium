@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Celerium Patinaje - Productos en Tiempo Real</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <h1>Celerium Patinaje - Productos en Tiempo Real</h1>
+
+    <!-- Tabla de productos -->
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Código</th>
+                <th>Stock</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody id="productsTable">
+            {{#each products}}
+            <tr>
+                <td>{{this.id}}</td>
+                <td>{{this.title}}</td>
+                <td>{{this.description}}</td>
+                <td>${{this.price}}</td>
+                <td>{{this.code}}</td>
+                <td>{{this.stock}}</td>
+                <td><button onclick="deleteProduct('{{this.id}}')">Eliminar</button></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <!-- Formulario para agregar producto -->
+    <h2>Agregar Producto</h2>
+    <form id="productForm">
+        <input type="text" name="title" placeholder="Título" required>
+        <input type="text" name="description" placeholder="Descripción" required>
+        <input type="number" name="price" placeholder="Precio" required>
+        <input type="text" name="code" placeholder="Código" required>
+        <input type="number" name="stock" placeholder="Stock" required>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <script>
+        const socket = io();
+
+        // Actualizar lista cuando llega un emit desde el servidor
+        socket.on('updateProducts', (products) => {
+            const table = document.getElementById('productsTable');
+            table.innerHTML = '';
+            products.forEach(prod => {
+                const row = `
+                    <tr>
+                        <td>${prod.id}</td>
+                        <td>${prod.title}</td>
+                        <td>${prod.description}</td>
+                        <td>$${prod.price}</td>
+                        <td>${prod.code}</td>
+                        <td>${prod.stock}</td>
+                        <td><button onclick="deleteProduct('${prod.id}')">Eliminar</button></td>
+                    </tr>
+                `;
+                table.innerHTML += row;
+            });
+        });
+
+        // Enviar nuevo producto
+        document.getElementById('productForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const product = {};
+            formData.forEach((value, key) => product[key] = value);
+            socket.emit('newProduct', product);
+            e.target.reset();
+        });
+
+        // Eliminar producto
+        function deleteProduct(id) {
+            socket.emit('deleteProduct', id);
+        }
+    </script>
+</body>
+
+</html>
