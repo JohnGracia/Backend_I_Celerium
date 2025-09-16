@@ -1,51 +1,92 @@
-import fs from 'fs/promises';
-import path from 'path';
-
-const filePath = path.resolve('data/carts.json');
+import Cart from "../models/cart.model.js";
+import Product from "../models/product.model.js";
 
 export default class CartManager {
-    async #readFile() {
-        try {
-            const content = await fs.readFile(filePath, 'utf-8');
-            return JSON.parse(content);
-        } catch {
-            return [];
-        }
-    }
-
-    async #writeFile(data) {
-        await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-    }
-
+    // Crear un nuevo carrito
     async createCart() {
-        const carts = await this.#readFile();
-        const newCart = {
-            id: crypto.randomUUID(),
-            products: []
-        };
-        carts.push(newCart);
-        await this.#writeFile(carts);
+        const newCart = await Cart.create({ products: [] });
         return newCart;
     }
 
+    // Obtener carrito por ID con productos "populados"
     async getCartById(id) {
-        const carts = await this.#readFile();
-        return carts.find(c => c.id === id);
+        const cart = await Cart.findById(id).populate("products.product");
+        return cart;
     }
 
+    // Agregar un producto al carrito
     async addProductToCart(cartId, productId) {
-        const carts = await this.#readFile();
-        const cart = carts.find(c => c.id === cartId);
+        const cart = await Cart.findById(cartId);
         if (!cart) return null;
 
-        const product = cart.products.find(p => p.product === productId);
-        if (product) {
-            product.quantity += 1;
+        const productIndex = cart.products.findIndex(
+            (p) => p.product.toString() === productId
+        );
+
+        if (productIndex > -1) {
+            cart.products[productIndex].quantity += 1;
         } else {
             cart.products.push({ product: productId, quantity: 1 });
         }
 
-        await this.#writeFile(carts);
+        await cart.save();
+        await cart.populate("products.product"); // ⚡ Aquí se reemplaza execPopulate()
+        return cart;
+    }
+
+    // Actualizar la cantidad de un producto específico en el carrito
+    async updateProductQuantity(cartId, productId, quantity) {
+        const cart = await Cart.findById(cartId);
+        if (!cart) return null;
+
+        const product = cart.products.find(
+            (p) => p.product.toString() === productId
+        );
+        if (product) {
+            product.quantity = quantity;
+            await cart.save();
+            await cart.populate("products.product");
+            return cart;
+        } else {
+            return null;
+        }
+    }
+
+    // Reemplazar todos los productos del carrito
+    async updateCartProducts(cartId, productsArray) {
+        const cart = await Cart.findById(cartId);
+        if (!cart) return null;
+
+        cart.products = productsArray.map((p) => ({
+            product: p.productId,
+            quantity: p.quantity,
+        }));
+
+        await cart.save();
+        await cart.populate("products.product");
+        return cart;
+    }
+
+    // Eliminar un producto específico del carrito
+    async removeProductFromCart(cartId, productId) {
+        const cart = await Cart.findById(cartId);
+        if (!cart) return null;
+
+        cart.products = cart.products.filter(
+            (p) => p.product.toString() !== productId
+        );
+        await cart.save();
+        await cart.populate("products.product");
+        return cart;
+    }
+
+    // Vaciar todo el carrito
+    async clearCart(cartId) {
+        const cart = await Cart.findById(cartId);
+        if (!cart) return null;
+
+        cart.products = [];
+        await cart.save();
         return cart;
     }
 }

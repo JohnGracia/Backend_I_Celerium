@@ -1,59 +1,30 @@
-import fs from 'fs/promises';
-import path from 'path';
-
-const filePath = path.resolve('data/products.json');
+import Product from "../models/product.model.js";
 
 export default class ProductManager {
-    async #readFile() {
-        try {
-            const content = await fs.readFile(filePath, 'utf-8');
-            return JSON.parse(content);
-        } catch {
-            return [];
-        }
+    // Obtener productos con paginación
+    async getProducts(page = 1, limit = 10) {
+        return await Product.paginate({}, { page, limit, lean: true });
     }
 
-    async #writeFile(data) {
-        await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-    }
-
-    async getProducts() {
-        return this.#readFile();
-    }
-
+    // Obtener producto por ID
     async getProductById(id) {
-        const products = await this.#readFile();
-        return products.find(p => p.id === id);
+        return await Product.findById(id).lean();
     }
 
+    // Agregar producto
     async addProduct(productData) {
-        const products = await this.#readFile();
-        const newProduct = {
-            id: crypto.randomUUID(),
-            ...productData
-        };
-        products.push(newProduct);
-        await this.#writeFile(products);
+        const newProduct = new Product(productData);
+        await newProduct.save();
         return newProduct;
     }
 
+    // Actualizar producto
     async updateProduct(id, updatedFields) {
-        const products = await this.#readFile();
-        const index = products.findIndex(p => p.id === id);
-        if (index === -1) return null;
-
-        products[index] = {
-            ...products[index],
-            ...updatedFields,
-            id: products[index].id
-        };
-        await this.#writeFile(products);
-        return products[index];
+        return await Product.findByIdAndUpdate(id, updatedFields, { new: true }).lean();
     }
 
+    // Eliminar producto
     async deleteProduct(id) {
-        const products = await this.#readFile();
-        const filtered = products.filter(p => p.id !== id);
-        await this.#writeFile(filtered);
+        return await Product.findByIdAndDelete(id).lean();
     }
 }

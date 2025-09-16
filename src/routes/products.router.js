@@ -1,44 +1,44 @@
-import { Router } from 'express';
-import ProductManager from '../managers/ProductManager.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { Router } from "express";
+import Product from "../models/product.model.js";
 
 const router = Router();
-const productManager = new ProductManager(path.join(__dirname, '../managers/products.json'));
 
-// Obtener todos los productos
-router.get('/', async (req, res) => {
-    const products = await productManager.getProducts();
-    res.json(products);
+// Obtener todos los productos (paginación)
+router.get("/", async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const products = await Product.paginate({}, { page, limit, lean: true });
+        res.json(products);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al obtener productos");
+    }
 });
 
-// Agregar producto
-router.post('/', async (req, res) => {
-    const newProduct = req.body;
-    await productManager.addProduct(newProduct);
-
-    const updatedProducts = await productManager.getProducts();
-
-    // Emitir actualización vía Socket.io
-    req.io.emit('updateProducts', updatedProducts);
-
-    res.json({ status: 'success', message: 'Producto agregado', products: updatedProducts });
+// Crear nuevo producto
+router.post("/", async (req, res) => {
+    try {
+        const newProduct = new Product(req.body);
+        await newProduct.save();
+        res.status(201).json({ status: "success", product: newProduct });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al crear producto");
+    }
 });
 
-// Eliminar producto
-router.delete('/:id', async (req, res) => {
-    const { id } = req.params;
-    await productManager.deleteProduct(id);
-
-    const updatedProducts = await productManager.getProducts();
-
-    // Emitir actualización vía Socket.io
-    req.io.emit('updateProducts', updatedProducts);
-
-    res.json({ status: 'success', message: 'Producto eliminado', products: updatedProducts });
+// Eliminar producto por ID
+router.delete("/:pid", async (req, res) => {
+    try {
+        const deleted = await Product.findByIdAndDelete(req.params.pid);
+        if (!deleted) return res.status(404).send("Producto no encontrado");
+        res.json({ status: "success", product: deleted });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al eliminar producto");
+    }
 });
 
 export default router;

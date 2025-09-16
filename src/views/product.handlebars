@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{product.title}} - Detalle</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <h1>{{product.title}}</h1>
+    <p>{{product.description}}</p>
+    <p><strong>Precio:</strong> ${{product.price}}</p>
+    <p><strong>Categoría:</strong> {{product.category}}</p>
+    <p><strong>Stock:</strong> {{product.stock}}</p>
+    <p><strong>Código:</strong> {{product.code}}</p>
+
+    <button onclick="addToCart('{{product._id}}')">Agregar al carrito</button>
+    <a href="/products">Volver a listado</a>
+
+    <script>
+        async function addToCart(productId) {
+            try {
+                const createRes = await fetch('/api/carts', { method: 'POST' });
+                const createJson = await createRes.json();
+                const cartId = createJson.cart._id || createJson.cart?.id || createJson.cart;
+                await fetch(`/api/carts/${cartId}/product/${productId}`, { method: 'POST' });
+                alert('Producto agregado al carrito: ' + cartId);
+            } catch (err) {
+                console.error(err);
+                alert('Error agregando al carrito');
+            }
+        }
+    </script>
+</body>
+
+</html>

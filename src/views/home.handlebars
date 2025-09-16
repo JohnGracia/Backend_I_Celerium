@@ -9,6 +9,7 @@
 
 <body>
     <h1>Celerium Patinaje - Lista de Productos</h1>
+
     <table border="1" cellpadding="10" cellspacing="0">
         <thead>
             <tr>
@@ -18,23 +19,53 @@
                 <th>Precio</th>
                 <th>Código</th>
                 <th>Stock</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
             {{#each products}}
             <tr>
-                <td>{{this.id}}</td>
+                <td>{{this._id}}</td>
                 <td>{{this.title}}</td>
                 <td>{{this.description}}</td>
                 <td>${{this.price}}</td>
                 <td>{{this.code}}</td>
                 <td>{{this.stock}}</td>
+                <td>
+                    <button class="add-to-cart-btn" data-id="{{this._id}}">Agregar al carrito</button>
+                </td>
             </tr>
             {{/each}}
         </tbody>
     </table>
 
     <a href="/realtimeproducts">Ir a productos en tiempo real</a>
+
+    <script>
+        // El cartId viene del backend
+        const cartId = "{{cartId}}";
+
+        document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const productId = btn.dataset.id;
+                try {
+                    const res = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" }
+                    });
+                    const data = await res.json();
+                    if (data.status === "success") {
+                        alert("Producto agregado al carrito");
+                    } else {
+                        alert("Error al agregar producto al carrito");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Error al agregar producto al carrito");
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
